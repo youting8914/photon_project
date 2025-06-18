@@ -1,3 +1,5 @@
+# .github/workflows/ci.yml
+
 name: CI
 
 on:
@@ -10,28 +12,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 检出仓库
       - uses: actions/checkout@v3
 
-      # 构建并测试 Docker 镜像
+      # 2. 构建并运行 Docker 容器内的脚本测试
       - name: Build and run Docker tests
         run: |
           docker build -t photon_env:ci .
           docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           docker run --rm photon_env:ci python scripts/scan_hidden_photon_refined.py
 
-      # 可选：直接在主机测试脚本
-      - name: Setup Python
+      # 3. 在主机环境下安装 Python 并测试脚本（可选）
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - name: Install deps
-        run: pip install sympy pint
+
+      - name: Install Python dependencies
+        run: pip install sympy pint emcee arviz rebound
+
       - name: Test scripts locally
-        run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+        run: |
+          python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
 
-  #  安装并编译 Lean 形式化证明
-      - name: Install & build Lean proofs
+      # 4. 运行 Lean 形式化验证
+      - name: Build & test Lean proofs
         uses: leanprover/lean-action@v1
-        with:
-        auto-config: true
-
