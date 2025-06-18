@@ -8,11 +8,11 @@ import toml
 from itertools import product
 import pickle
 
-# （可选）显式设置数据目录
-os.environ['DH_DATA_DIR'] = r'E:\photon_project\DH_data'
+# 数据目录：优先使用环境变量 DH_DATA_DIR，否则默认当前工作目录下的 DH_data
+DH_DATA_DIR = os.environ.get('DH_DATA_DIR', os.path.join(os.getcwd(), 'DH_data'))
 
 # Pickle 文件位置（Compact dataset）
-PICKLE_FN = os.path.join(os.environ['DH_DATA_DIR'], 'std_soln_He.p')
+PICKLE_FN = os.path.join(DH_DATA_DIR, 'std_soln_He.p')
 
 # 加载标准历史数据：Pickle 中存储的是 4 元组 (rs, Tm, xHII, xHeII)，无 xHeIII
 with open(PICKLE_FN, 'rb') as f:
@@ -21,13 +21,13 @@ with open(PICKLE_FN, 'rb') as f:
 # 解包为四个数组
 rs_std, T_std, xHII_std, xHeII_std = map(np.asarray, std)
 
-# 如果你需要 xHeIII 标量阵，可用 zeros 填充（因为原 pickle 中未提供）
+# 如果需要 xHeIII 标量阵，用 zeros 填充（原 pickle 中未提供）
 xHeIII_std = np.zeros_like(rs_std)
 
 def calc_dNeff(m, chi):
     """
     用简化的代理函数计算 ΔN_eff：
-    以末端 Tm 比例变化做示例。
+    以末端 Tm 比例变化作示例。
     """
     # 这里只示例：实际应调用 Boltzmann 或 DarkHistory
     # proxy: ΔN_eff ∝ (T_std[-1]/T_std[0] - 1) * 0.03
