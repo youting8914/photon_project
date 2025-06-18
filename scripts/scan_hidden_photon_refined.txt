@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+# scan_hidden_photon_refined.py
+# 使用 DarkHistory 扫描隐藏光子参数空间，对 ΔN_eff 进行阈值检测
+
+import os
+# 显式设置数据目录（请根据实际路径修改）
+os.environ['DH_DATA_DIR'] = r'E:\photon_project\DH_data'
+
+import numpy as np
+import toml
+from itertools import product
+from darkhistory.history.tla import get_history
+
+# 红移网格：1+z 从 1001 (z=1000) 到 2 (z=1)，1000 点
+rs_vec = np.logspace(np.log10(1001), np.log10(2), 1000)
+
+def calc_dNeff(m, chi):
+    """
+    调用 get_history 计算 ΔN_eff：
+    - DM_process='swave'：s-波暗光子模型
+    - mDM=m：暗光子质量 (eV)
+    - sigmav=chi：热平均截面 (cm^3/s)
+    返回估算的 ΔN_eff（示例用电子温度比作 proxy）。
+    """
+    hist = get_history(
+        rs_vec,
+        DM_process='swave',
+        mDM=m,
+        sigmav=chi
+    )
+    # hist 返回 (T_e, xHII, xHeII, xHeIII)
+    T, xHII, xHeII, xHeIII = hist
+    # 用末端温度变化比例作为 ΔN_eff proxy
+    return (T[-1] / T[0] - 1) * 0.03
+
+if __name__ == "__main__":
+    # 参数网格──30×30
+    m_vals   = np.logspace(-14, -2, 30)   # 1e-14 eV to 1e-2 eV
+    chi_vals = np.logspace(-26, -20, 30)  # 1e-26 to 1e-20 cm^3/s
+
+    grid = []
+    for m, chi in product(m_vals, chi_vals):
+        dn = calc_dNeff(m, chi)
+        grid.append({"m_eV": m, "chi": chi, "dNeff": dn})
+
+    # 保存结果到 TOML
+    with open("hidden_photon_refined.toml", "w") as f:
+        toml.dump({"grid": grid}, f)
+
+    # 输出最大 ΔN_eff 并判断是否超过阈值
+    max_dn = max(item["dNeff"] for item in grid)
+    print(f"Max ΔN_eff = {max_dn:.3f}")
+    if max_dn >= 0.05:
+        print("❌ ΔN_eff ≥ 0.05，参数区间被排除。")
+    else:
+        print("✅ ΔN_eff < 0.05，符合饱和条件。")

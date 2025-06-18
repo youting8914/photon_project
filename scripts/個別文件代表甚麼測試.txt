@@ -1,0 +1,6 @@
+
+python fit_qnm_gamma.py                             # 拟合 QNM γ
+python bms_jacobi_check.py                          # 检查 BMS₄ Jacobi
+python fit_a0_flat_debug.py                         # 拟合 a₀_flat
+python mtheory_r4_corrected.py                      # 求解 R⁴ 校正 k
+python scan_hidden_photon_refined.py                # ΔNₑff 网格扫描

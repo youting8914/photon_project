@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+# mtheory_r4_corrected.py
+# 求解 M-theory R⁴ 校正系数 k，使得 β(N=32) 修正 0.1%
+
+import sympy as sp
+
+# 定义符号
+N, k = sp.symbols('N k')
+
+# β 函数假设：β(N) = 4/N^2 + k/N^3
+beta = 4/N**2 + k/N**3
+
+# 令 β(32) = β(32)*(1 + 1e-3)
+target = beta.subs(N, 32) * (1 + 1e-3)
+
+# 解 k
+sol = sp.solve(beta.subs(N, 32) - target, k)
+print("在 N=32 引入 0.1% 修正所需的 R⁴ 校正系数 k =", sol[0])
