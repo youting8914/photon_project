@@ -28,3 +28,11 @@ jobs:
         run: pip install sympy pint
       - name: Test scripts locally
         run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+
+  #  安装并编译 Lean 形式化证明
+      - name: Install Lean
+        uses: leanprover/lean4-action@v1
+      - name: Build Lean proofs
+        run: |
+          cd photon_project_formal   # 或者你存放 .lean 源码的目录
+          lean --make
