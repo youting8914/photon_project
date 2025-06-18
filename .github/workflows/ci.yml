@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # 构建并测试 Docker 镜像
+      - name: Build and run Docker tests
+        run: |
+          docker build -t photon_env:ci .
+          docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+          docker run --rm photon_env:ci python scripts/scan_hidden_photon_refined.py
+
+      # 可选：直接在主机测试脚本
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install deps
+        run: pip install sympy pint
+      - name: Test scripts locally
+        run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
