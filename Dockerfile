@@ -3,7 +3,8 @@
 FROM python:3.10-slim
 
 # 安装 Python 依赖
-RUN pip install --no-cache-dir sympy pint emcee arviz rebound
+RUN pip install --no-cache-dir sympy pint emcee arviz rebound toml
+
 
 # 拷贝脚本
 WORKDIR /app
