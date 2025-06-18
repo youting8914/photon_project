@@ -2,10 +2,10 @@
 
 FROM python:3.10-slim
 
-# 1. 安装系统依赖：wget、unzip、unrar
+# 1. 安装系统依赖：wget、unzip、p7zip-full、bash
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      wget unzip unrar && \
+      wget unzip p7zip-full bash && \
     rm -rf /var/lib/apt/lists/*
 
 # 2. 安装 Python 库
