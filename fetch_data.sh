@@ -9,8 +9,7 @@ declare -A files=(
 for dir in "${!files[@]}"; do
   url="${files[$dir]}"
   mkdir -p "$dir"
-  # 下载为 .rar
   wget -O "$dir/${dir}.rar" "$url"
-  # 用 7z 解压所有内容到对应目录
-  7z x "$dir/${dir}.rar" -o"$dir"
+  # 用 unrar 解压到目录（-y 自动确认覆盖）
+  unrar x -y "$dir/${dir}.rar" "$dir/"
 done
