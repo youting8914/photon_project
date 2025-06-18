@@ -10,6 +10,6 @@ for dir in "${!files[@]}"; do
   url="${files[$dir]}"
   mkdir -p "$dir"
   wget -O "$dir/${dir}.rar" "$url"
-  # 用 unrar 解压到目录（-y 自动确认覆盖）
-  unrar x -y "$dir/${dir}.rar" "$dir/"
+  # 用 7z 解压 RAR 到对应目录
+  7z x "$dir/${dir}.rar" -o"$dir"
 done

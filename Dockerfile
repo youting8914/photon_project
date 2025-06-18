@@ -1,15 +1,16 @@
-# Dockerfile （更新版）
+# Dockerfile
 
 FROM python:3.10-slim
 
-# 安装 wget、unzip、p7zip-full（备用）、unrar、bash
+# 安装系统依赖：wget、unzip、p7zip-full、bash
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      wget unzip p7zip-full unrar bash && \
+      wget unzip p7zip-full bash && \
     rm -rf /var/lib/apt/lists/*
 
 # 安装 Python 库
-RUN pip install --no-cache-dir sympy pint emcee arviz rebound toml
+RUN pip install --no-cache-dir \
+      sympy pint emcee arviz rebound toml
 
 WORKDIR /app
 COPY scripts/ ./scripts/
