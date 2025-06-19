@@ -17,7 +17,7 @@ done
 +  url="${files[$dir]}"
 +  mkdir -p "$dir"
 +  # 静默下载，不输出进度
-+  wget -q -O "$dir/${dir}.rar" "$url"
++  curl -sSL "$url" -o "$dir/${dir}.rar"
 +  # 解压
-+  7z x "$dir/${dir}.rar" -o"$dir" > /dev/null
++ 7z x "$dir/${dir}.rar" -o"$dir" > /dev/null
 +done
