@@ -1,55 +1,51 @@
-# .github/workflows/ci.yml
-
 name: CI
 
 on:
-push:
-branches: \[main]
-pull\_request:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
-test:
-runs-on: ubuntu-latest
-steps:
-\# 1. 检出仓库
-\- name: Checkout code
-uses: actions/checkout\@v3
+  test:
+    runs-on: ubuntu-latest
 
-```
-  # 2. 在 Runner 上拉取数据
-  - name: Fetch data on runner
-    run: |
-      chmod +x fetch_data.sh
-      ./fetch_data.sh
+    steps:
+      # 1. 检出仓库
+      - uses: actions/checkout@v3
 
-  # 3. 构建 Docker 镜像
-  - name: Build Docker image
-    run: docker build -t photon_env:ci .
+      # 2. 在 runner 上拉取数据
+      - name: Fetch data on runner
+        run: |
+          chmod +x fetch_data.sh
+          ./fetch_data.sh
 
-  # 4. 在 Docker 容器中测试 mtheory_r4_fit.py
-  - name: Test in Docker: mtheory_r4_fit.py
-    run: docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+      # 3. 构建 Docker 镜像
+      - name: Build Docker image
+        run: docker build -t photon_env:ci .
 
-  # 5. 在 Docker 容器中测试需要数据的脚本，挂载数据目录
-  - name: Test in Docker: scan_hidden_photon_refined_pickle.py
-    run: |
-      docker run --rm \
-        -v "${{ github.workspace }}/DH_data:/app/DH_data" \
-        photon_env:ci python scripts/scan_hidden_photon_refined_pickle.py
+      # 4. 在 Docker 容器中测试 mtheory_r4_fit.py
+      - name: Test in Docker: mtheory_r4_fit.py
+        run: docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
 
-  # 6. 在主机环境中运行 Python 测试（可选）
-  - name: Set up Python
-    uses: actions/setup-python@v4
-    with:
-      python-version: '3.10'
+      # 5. 在 Docker 容器中测试 scan_hidden_photon_refined_pickle.py（挂载 DH_data）
+      - name: Test in Docker: scan_hidden_photon_refined_pickle.py
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}/DH_data:/app/DH_data" \
+            photon_env:ci python scripts/scan_hidden_photon_refined_pickle.py
 
-  - name: Install Python dependencies
-    run: pip install sympy pint emcee arviz rebound toml
+      # 6. 主机上再跑一次 Python 脚本测试（可选）
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-  - name: Test locally: mtheory_r4_fit.py
-    run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+      - name: Install Python dependencies
+        run: pip install sympy pint emcee arviz rebound toml
 
-  # 7. Lean 形式化验证
-  - name: Build & test Lean proofs
-    uses: leanprover/lean-action@v1
-```
+      - name: Test locally: mtheory_r4_fit.py
+        run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+
+      # 7. Lean 形式化验证
+      - name: Build & test Lean proofs
+        uses: leanprover/lean-action@v1
