@@ -10,30 +10,33 @@ jobs:
 test:
 runs-on: ubuntu-latest
 steps:
-\- uses: actions/checkout\@v3
+\- name: Checkout code
+uses: actions/checkout\@v3
 
 ```
   - name: Fetch data on runner
-    run: chmod +x fetch_data.sh && ./fetch_data.sh
+    run: |
+      chmod +x fetch_data.sh
+      ./fetch_data.sh
 
   - name: Build Docker image
     run: docker build -t photon_env:ci .
 
-  - name: Test MTheory script in Docker
+  - name: Test mtheory_r4_fit.py in Docker
     run: docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
 
-  - name: Test hidden_photon in Docker
+  - name: Test scan_hidden_photon_refined_pickle.py in Docker
     run: docker run --rm -v "${{ github.workspace }}/DH_data:/app/DH_data" photon_env:ci python scripts/scan_hidden_photon_refined_pickle.py
 
-  - name: Setup Python
+  - name: Set up Python 3.10
     uses: actions/setup-python@v4
     with:
-      python-version: 3.10
+      python-version: '3.10'
 
-  - name: Install Python deps
+  - name: Install Python dependencies
     run: pip install sympy pint emcee arviz rebound toml
 
-  - name: Test MTheory script locally
+  - name: Test mtheory_r4_fit.py locally
     run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
 
   - name: Build and test Lean proofs
