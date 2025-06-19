@@ -1,6 +1,7 @@
+[package]
 name = "photon_project"
 version = "0.1.0"
-defaultTargets = ["photon_project"]
+roots = ["src"]
 
 [[lean_lib]]
 name = "PhotonProject"
