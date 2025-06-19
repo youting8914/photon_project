@@ -13,20 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # --- 仅检查关键小文件和目录存在性，不再找 rotmod.dat ---
+      # 仅检查关键小文件和目录，不再尝试下载全量数据
       - name: Check required small data files
         run: |
           missing=false
-          # 必需的单文件
-          for f in DH_data/std_soln_He.p; do
-            if [ ! -f "$f" ]; then
-              echo "::error::Required data file missing: $f"
-              missing=true
-            else
-              echo "Found $f"
-            fi
-          done
-          # 必需的数据目录
+          # 检查 std_soln_He.p
+          if [ ! -f DH_data/std_soln_He.p ]; then
+            echo "::error::Required data file missing: DH_data/std_soln_He.p"
+            missing=true
+          else
+            echo "Found DH_data/std_soln_He.p"
+          fi
+          # 检查 rotmod_files 目录
           if [ ! -d rotmod_files ]; then
             echo "::error::Required data directory missing: rotmod_files/"
             missing=true
@@ -34,7 +32,7 @@ jobs:
             echo "Found rotmod_files/ directory"
           fi
           if [ "$missing" = true ]; then
-            echo "Please download the full DH_data and rotmod_files archives from:" 
+            echo "Please download the full DH_data and rotmod_files archives from:"
             echo "  https://zenodo.org/records/15691765/files/DH_data.rar?download=1"
             echo "  https://zenodo.org/records/15691753/files/rotmod_files.rar?download=1"
             echo "and extract them into the project root DH_data/ and rotmod_files/ respectively."
@@ -65,7 +63,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Lean + Lake
-        uses: leanprover/lean4-action@v1
+        uses: leanprover/lean-action@v1
         with:
           lean-version: latest
 
