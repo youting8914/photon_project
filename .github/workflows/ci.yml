@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  push:    {}
+  push: {}
   pull_request: {}
 
 jobs:
@@ -13,15 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. 拉取数据到 runner（非 Docker）
+      # 2. 拉取数据到 runner 并静默记录日志
       - name: Fetch data on runner (to file)
         run: |
           chmod +x fetch_data.sh
           mkdir -p logs
-          # 把下载和解压日志都重定向到 logs/fetch.log
-          bash fetch_data.sh > logs/fetch.log 2>&1 || (echo "Fetch failed, see logs/fetch.log" && cat logs/fetch.log && exit 1)
+          # 所有下载和解压输出重定向到 logs/fetch.log
+          bash fetch_data.sh > logs/fetch.log 2>&1 \
+            || (echo "Fetch failed, see logs/fetch.log"; cat logs/fetch.log; exit 1)
 
-      # 3. 设置 Python 环境并安装依赖
+      # 3. 设置 Python 并安装依赖
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
@@ -38,6 +39,6 @@ jobs:
       - name: Test scan_hidden_photon_refined_pickle.py
         run: python scripts/scan_hidden_photon_refined_pickle.py
 
-      # 5. 形式化验证（Lean）
+      # 5. Lean 形式化验证
       - name: Build & test Lean proofs
         uses: leanprover/lean-action@v1
