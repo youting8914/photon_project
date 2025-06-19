@@ -1,43 +1,41 @@
 name: CI
 
 on:
-push: {}
-pull\_request: {}
+  push:    {}
+  pull_request: {}
 
 jobs:
-test:
-runs-on: ubuntu-latest
-steps:
-\- name: Checkout repository
-uses: actions/checkout\@v3
+  test:
+    runs-on: ubuntu-latest
 
-```
-  - name: Fetch data on runner
-    run: |
-      chmod +x fetch_data.sh
-      ./fetch_data.sh
+    steps:
+      # 1. 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  - name: Build Docker image
-    run: docker build -t photon_env:ci .
+      # 2. 拉取数据到 runner（非 Docker）
+      - name: Fetch data on runner
+        run: |
+          chmod +x fetch_data.sh
+          ./fetch_data.sh
 
-  - name: Test mtheory_r4_fit.py in Docker
-    run: docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+      # 3. 设置 Python 环境并安装依赖
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-  - name: Test hidden photon scan in Docker
-    run: docker run --rm -v "$GITHUB_WORKSPACE/DH_data:/app/DH_data" photon_env:ci python scripts/scan_hidden_photon_refined_pickle.py
+      - name: Install Python dependencies
+        run: |
+          pip install sympy pint emcee arviz rebound toml
 
-  - name: Set up Python 3.10
-    uses: actions/setup-python@v4
-    with:
-      python-version: '3.10'
+      # 4. 运行核心脚本测试
+      - name: Test mtheory_r4_fit.py
+        run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
 
-  - name: Install Python dependencies
-    run: |
-      pip install sympy pint emcee arviz rebound toml
+      - name: Test scan_hidden_photon_refined_pickle.py
+        run: python scripts/scan_hidden_photon_refined_pickle.py
 
-  - name: Test mtheory_r4_fit.py locally
-    run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
-
-  - name: Build & test Lean proofs
-    uses: leanprover/lean-action@v1
-```
+      # 5. 形式化验证（Lean）
+      - name: Build & test Lean proofs
+        uses: leanprover/lean-action@v1
