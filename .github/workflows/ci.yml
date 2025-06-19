@@ -1,10 +1,12 @@
+# .github/workflows/ci.yml
+
 name: CI
 
 on:
 push:
-branches:
-\- main
+branches: \[ 'main' ]
 pull\_request:
+branches: \[ 'main' ]
 
 jobs:
 test:
@@ -28,13 +30,14 @@ uses: actions/checkout\@v3
   - name: Test scan_hidden_photon_refined_pickle.py in Docker
     run: docker run --rm -v "${{ github.workspace }}/DH_data:/app/DH_data" photon_env:ci python scripts/scan_hidden_photon_refined_pickle.py
 
-  - name: Set up Python 3.10
+  - name: Set up Python
     uses: actions/setup-python@v4
     with:
       python-version: '3.10'
 
   - name: Install Python dependencies
-    run: pip install sympy pint emcee arviz rebound toml
+    run: |
+      pip install sympy pint emcee arviz rebound toml
 
   - name: Test mtheory_r4_fit.py locally
     run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
