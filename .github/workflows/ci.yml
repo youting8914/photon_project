@@ -13,10 +13,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Fetch required data
+      # --- 不再自动下载大压缩包，只检查关键小文件存在性 ---
+      - name: Check required small data files
         run: |
-          chmod +x fetch_data.sh
-          bash fetch_data.sh
+          missing=false
+          for f in DH_data/std_soln_He.p rotmod_files/rotmod.dat; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Required data file missing: $f"
+              missing=true
+            else
+              echo "Found $f"
+            fi
+          done
+          if [ "$missing" = true ]; then
+            echo "Please download the full DH_data and rotmod_files archives from:" 
+            echo "  https://your-storage.example.com/DH_data.rar"
+            echo "  https://your-storage.example.com/rotmod_files.rar"
+            echo "and extract them into the project root DH_data/ and rotmod_files/ directories."
+            exit 1
+          fi
 
       - name: Setup Python 3.10
         uses: actions/setup-python@v4
@@ -26,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install sympy pint emcee arviz rebound toml
+          pip install sympy pint emcee arviz rebound toml h5py pandas
 
       - name: Run analysis scripts
         run: |
@@ -49,9 +64,7 @@ jobs:
       - name: Verify Lake files
         working-directory: photon_project_formal
         run: |
-          ls -l lakefile.toml
-          ls -l lake-manifest.json
-          ls -l lean-toolchain
+          ls -l lakefile.toml lake-manifest.json lean-toolchain
 
       - name: Build Lean project
         working-directory: photon_project_formal
