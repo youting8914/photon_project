@@ -27,8 +27,8 @@ jobs:
           done
           if [ "$missing" = true ]; then
             echo "Please download the full DH_data and rotmod_files archives from:" 
-            echo "  https://your-storage.example.com/DH_data.rar"
-            echo "  https://your-storage.example.com/rotmod_files.rar"
+            echo "  https://zenodo.org/records/15691765/files/DH_data.rar?download=1"
+            echo "  https://zenodo.org/records/15691753/files/rotmod_files.rar?download=1"
             echo "and extract them into the project root DH_data/ and rotmod_files/ directories."
             exit 1
           fi
