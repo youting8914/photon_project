@@ -13,18 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 仅检查关键小文件和目录，不再尝试下载全量数据
       - name: Check required small data files
         run: |
           missing=false
-          # 检查 std_soln_He.p
           if [ ! -f DH_data/std_soln_He.p ]; then
             echo "::error::Required data file missing: DH_data/std_soln_He.p"
             missing=true
           else
             echo "Found DH_data/std_soln_He.p"
           fi
-          # 检查 rotmod_files 目录
           if [ ! -d rotmod_files ]; then
             echo "::error::Required data directory missing: rotmod_files/"
             missing=true
@@ -35,7 +32,7 @@ jobs:
             echo "Please download the full DH_data and rotmod_files archives from:"
             echo "  https://zenodo.org/records/15691765/files/DH_data.rar?download=1"
             echo "  https://zenodo.org/records/15691753/files/rotmod_files.rar?download=1"
-            echo "and extract them into the project root DH_data/ and rotmod_files/ respectively."
+            echo "and extract into DH_data/ and rotmod_files/ respectively."
             exit 1
           fi
 
@@ -65,7 +62,8 @@ jobs:
       - name: Setup Lean + Lake
         uses: leanprover/lean-action@v1
         with:
-          lean-version: latest
+          auto-config: true
+          lake-package-directory: photon_project_formal
 
       - name: Verify Lake files
         working-directory: photon_project_formal
