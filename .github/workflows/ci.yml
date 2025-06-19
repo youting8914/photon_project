@@ -4,20 +4,19 @@ name: CI
 
 on:
 push:
-branches:
-\- main
+branches: \[main]
 pull\_request:
 
 jobs:
 test:
 runs-on: ubuntu-latest
+steps:
+\# 1. 检出仓库
+\- name: Checkout code
+uses: actions/checkout\@v3
 
 ```
-steps:
-  # 1. 检出仓库
-  - uses: actions/checkout@v3
-
-  # 2. Runner 上拉取数据
+  # 2. 在 Runner 上拉取数据
   - name: Fetch data on runner
     run: |
       chmod +x fetch_data.sh
@@ -27,18 +26,18 @@ steps:
   - name: Build Docker image
     run: docker build -t photon_env:ci .
 
-  # 4. 在 Docker 中测试 mtheory_r4_fit.py
+  # 4. 在 Docker 容器中测试 mtheory_r4_fit.py
   - name: Test in Docker: mtheory_r4_fit.py
     run: docker run --rm photon_env:ci python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
 
-  # 5. 在 Docker 中测试需要数据的脚本，挂载数据目录
+  # 5. 在 Docker 容器中测试需要数据的脚本，挂载数据目录
   - name: Test in Docker: scan_hidden_photon_refined_pickle.py
     run: |
       docker run --rm \
         -v "${{ github.workspace }}/DH_data:/app/DH_data" \
         photon_env:ci python scripts/scan_hidden_photon_refined_pickle.py
 
-  # 6. 主机环境下 Python 测试（可选）
+  # 6. 在主机环境中运行 Python 测试（可选）
   - name: Set up Python
     uses: actions/setup-python@v4
     with:
