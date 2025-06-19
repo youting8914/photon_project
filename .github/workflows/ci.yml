@@ -11,40 +11,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3               # 获取仓库代码 :contentReference[oaicite:8]{index=8}
+        uses: actions/checkout@v3
+
+      - name: Fetch required data
+        run: |
+          chmod +x fetch_data.sh
+          bash fetch_data.sh
 
       - name: Setup Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'                # 安装指定 Python 版本 :contentReference[oaicite:9]{index=9}
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install sympy pint emcee arviz rebound toml  # 安装项目依赖
+          pip install sympy pint emcee arviz rebound toml
 
       - name: Run analysis scripts
         run: |
-          python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2  # 核心脚本测试
-          python scripts/scan_hidden_photon_refined_pickle.py  # 次级脚本测试
+          python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+          python scripts/scan_hidden_photon_refined_pickle.py
 
   build-lean:
     name: Build & Verify Lean
+    needs: test-python
     runs-on: ubuntu-latest
-    needs: test-python                                  # 依赖前序 Job 成功 :contentReference[oaicite:10]{index=10}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3                        # 再次获取同一代码快照 :contentReference[oaicite:11]{index=11}
+        uses: actions/checkout@v3
 
       - name: Setup Lean + Lake
-        uses: leanprover/lean-action@v1                  # 调用官方 Lean CI Action :contentReference[oaicite:12]{index=12}
+        uses: leanprover/lean4-action@v1
         with:
-          lean-version: latest                            # 可指定版本
+          lean-version: latest
 
       - name: Verify Lake files
         working-directory: photon_project_formal
-        run: ls -l lakefile.toml lake-manifest.json lean-toolchain  # 检查关键文件是否存在
+        run: |
+          ls -l lakefile.toml
+          ls -l lake-manifest.json
+          ls -l lean-toolchain
 
       - name: Build Lean project
         working-directory: photon_project_formal
-        run: lake build --verbose                         # 执行构建与测试 :contentReference[oaicite:13]{index=13}
+        run: lake build --verbose
