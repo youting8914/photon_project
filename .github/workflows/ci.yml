@@ -1,42 +1,34 @@
-name: CI
+name: Full CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 
 jobs:
-  fetch-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Fetch data archives
-        run: |
-          chmod +x fetch_data.sh
-          mkdir -p logs
-          bash fetch_data.sh > logs/fetch.log 2>&1 || (echo "Fetch failed"; cat logs/fetch.log; exit 1)
-
-      - name: Setup Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install sympy pint emcee arviz rebound toml
-
-      - name: Run mtheory_r4_fit.py
-        run: python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
-
-      - name: Run scan_hidden_photon_refined_pickle.py
-        run: python scripts/scan_hidden_photon_refined_pickle.py
-
-  lean-verify:
+  test-python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Lean
-        uses: leanprover/lean-action@v1
-      - name: Build Lean proofs
-        run: lean --make
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with: python-version: '3.10'
+      - name: Install deps
+        run: pip install sympy pint emcee arviz rebound toml
+      - name: Run analysis scripts
+        run: |
+          python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
+          python scripts/scan_hidden_photon_refined_pickle.py
+
+  build-lean:
+    runs-on: ubuntu-latest
+    needs: test-python
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Lean + Lake
+        uses: leanprover/lean4-action@v1
+        with:
+          lean-version: latest
+      - name: Build Lean project
+        working-directory: photon_project_formal
+        run: lake build --verbose
