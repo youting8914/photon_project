@@ -13,3 +13,11 @@ for dir in "${!files[@]}"; do
   # 用 7z 解压 RAR 到对应目录
   7z x "$dir/${dir}.rar" -o"$dir"
 done
++for dir in "${!files[@]}"; do
++  url="${files[$dir]}"
++  mkdir -p "$dir"
++  # 静默下载，不输出进度
++  wget -q -O "$dir/${dir}.rar" "$url"
++  # 解压
++  7z x "$dir/${dir}.rar" -o"$dir" > /dev/null
++done
