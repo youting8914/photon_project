@@ -1,0 +1,10 @@
+# 忽略数据归档与解压目录
+*.rar
+DH_data/
+rotmod_files/
+
+# 忽略 Lean 生成文件（只保留源码、lakefile.toml、lake-manifest.json）
+photon_project_formal/build/
+
+# 忽略本地日志、临时文件
+*.log
