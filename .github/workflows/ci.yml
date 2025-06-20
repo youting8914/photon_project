@@ -6,19 +6,12 @@ on:
   pull_request:
 
 jobs:
-  # — Python 分析脚本测试 —
+  # 1. Python 分析脚本测试
   test-python:
     name: Run Python Analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Debug list files
-        run: |
-          echo "PWD=$(pwd)"
-          echo "=== Repository Contents ==="
-          ls -R .
+      - uses: actions/checkout@v3
 
       - name: Check required small data files
         shell: bash
@@ -57,14 +50,13 @@ jobs:
           python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           python scripts/scan_hidden_photon_refined_pickle.py
 
-  # — Lean 源码编译测试（方案 1）—
+  # 2. Lean 源码编译测试（直接调用 lean）
   build-lean:
     name: Build & Verify Lean
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Install Elan (Lean toolchain manager)
         shell: bash
@@ -72,11 +64,11 @@ jobs:
           curl -sSf https://elan.lean-lang.org/elan-init.sh \
             | sh -s -- -y --default-toolchain leanprover/lean4:stable
           export PATH="$HOME/.elan/bin:$PATH"
-          lean --version
+          lean --version                                    # 输出示例：Lean (version 4.20.0…) :contentReference[oaicite:0]{index=0}
 
-      - name: Compile Lean sources with lean --check
+      - name: Compile Lean sources
         shell: bash
         working-directory: photon_project_formal
         run: |
           export PATH="$HOME/.elan/bin:$PATH"
-          lean --check src/Main.lean
+          lean src/Main.lean                                # 直接编译，无需 --make / --check :contentReference[oaicite:1]{index=1}
