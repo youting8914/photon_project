@@ -6,64 +6,37 @@ on:
   pull_request:
 
 jobs:
-  # 1. Python 脚本测试
   test-python:
     name: Run Python Analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check required small data files
+      - uses: actions/checkout@v3
+      - name: Check small data files
         run: |
           missing=false
-          if [ ! -f DH_data/std_soln_He.p ]; then
-            echo "::error::Required data file missing: DH_data/std_soln_He.p"
-            missing=true
-          fi
-          if [ ! -d rotmod_files ]; then
-            echo "::error::Required data directory missing: rotmod_files/"
-            missing=true
-          fi
-          if [ "$missing" = true ]; then
-            echo "Please download archives from:"
-            echo "  https://zenodo.org/records/15691765/files/DH_data.rar?download=1"
-            echo "  https://zenodo.org/records/15691753/files/rotmod_files.rar?download=1"
-            exit 1
-          fi
-
-      - name: Setup Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Python dependencies
-        run: |
+          [ ! -f DH_data/std_soln_He.p ] && echo "::error::Missing DH_data/std_soln_He.p" && missing=true
+          [ ! -d rotmod_files ] && echo "::error::Missing rotmod_files/" && missing=true
+          $missing && echo "Please download archives from Zenodo" && exit 1
+      - uses: actions/setup-python@v4
+        with: { python-version: '3.10' }
+      - run: |
           pip install --upgrade pip
           pip install sympy pint emcee arviz rebound toml h5py pandas
-
-      - name: Run analysis scripts
-        run: |
+      - run: |
           python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           python scripts/scan_hidden_photon_refined_pickle.py
 
-  # 2. Lean 编译测试
   build-lean:
     name: Build & Verify Lean
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Elan (Lean toolchain)
+      - uses: actions/checkout@v3
+      - name: Install Elan
         run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf \
-            | sh -s -- --default-toolchain leanprover/lean4:stable
-
-      - name: Verify Lean version
-        run: lean --version
-
-      - name: Compile Lean sources with lean --make
+          curl -sSf https://elan.lean-lang.org/elan-init.sh | sh      # 官方推荐安装脚本【:contentReference[oaicite:5]{index=5}】
+      - name: Verify Lean
+        run: lean --version                                         # 确保已安装 Lean 4
+      - name: Compile with lean --make
         working-directory: photon_project_formal
-        run: lean --make src/Main.lean
+        run: lean --make src/Main.lean                             # 直接编译，不依赖 Lake【】
