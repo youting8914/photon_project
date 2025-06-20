@@ -6,8 +6,7 @@ on:
   pull_request:
 
 jobs:
-  # ————————————————————————————————————————————————
-  # 1. Python 分析脚本测试
+  # — Python 分析脚本测试 —
   test-python:
     name: Run Python Analysis
     runs-on: ubuntu-latest
@@ -24,12 +23,8 @@ jobs:
       - name: Check required small data files
         shell: bash
         run: |
-          # 定位仓库根目录
           REPOROOT="$(git rev-parse --show-toplevel)"
-          echo "Repo root is $REPOROOT"
           missing=false
-
-          # 检查单个文件和目录
           for P in \
             "$REPOROOT/DH_data/std_soln_He.p" \
             "$REPOROOT/rotmod_files"; do
@@ -40,7 +35,6 @@ jobs:
               echo "Found: $P"
             fi
           done
-
           if [ "$missing" = true ]; then
             echo "Please download and extract archives to DH_data/ and rotmod_files/:"
             echo "  https://zenodo.org/records/15691765/files/DH_data.rar?download=1"
@@ -63,8 +57,7 @@ jobs:
           python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           python scripts/scan_hidden_photon_refined_pickle.py
 
-  # ————————————————————————————————————————————————
-  # 2. Lean 源码编译测试
+  # — Lean 源码编译测试（方案 1）—
   build-lean:
     name: Build & Verify Lean
     needs: test-python
@@ -76,18 +69,14 @@ jobs:
       - name: Install Elan (Lean toolchain manager)
         shell: bash
         run: |
-          # 安装 Elan 并自动同意
           curl -sSf https://elan.lean-lang.org/elan-init.sh \
             | sh -s -- -y --default-toolchain leanprover/lean4:stable
-          # 将 Elan 安装目录加入 PATH
           export PATH="$HOME/.elan/bin:$PATH"
-          # 验证 lean 可用
           lean --version
 
-      - name: Compile Lean sources with lean --make
+      - name: Compile Lean sources with lean --check
         shell: bash
         working-directory: photon_project_formal
         run: |
-          # 保证 lean 在 PATH 中
           export PATH="$HOME/.elan/bin:$PATH"
-          lean --make src/Main.lean
+          lean --check src/Main.lean
