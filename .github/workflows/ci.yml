@@ -74,7 +74,7 @@ jobs:
       - name: Install Elan (Lean toolchain manager)
         run: |
           curl -sSf https://elan.lean-lang.org/elan-init.sh \
-            | sh -s -- --default-toolchain leanprover/lean4:stable
+            | sh -s -- -y --default-toolchain leanprover/lean4:stable
 
       - name: Verify Lean version
         run: lean --version
