@@ -11,12 +11,20 @@ jobs:
     name: Run Python Analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Debug list files
+        run: |
+          echo "PWD=$(pwd)"
+          echo "=== Repository Contents ==="
+          ls -R .
 
       - name: Check required small data files
         shell: bash
         run: |
           REPOROOT="$(git rev-parse --show-toplevel)"
+          echo "Repo root is $REPOROOT"
           missing=false
           for P in \
             "$REPOROOT/DH_data/std_soln_He.p" \
@@ -51,14 +59,15 @@ jobs:
           python scripts/scan_hidden_photon_refined_pickle.py
 
   # 2. Lean 源码编译测试（直接调用 lean）
-    build-lean:
+  build-lean:
     name: Build & Verify Lean
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Install Elan
+      - name: Install Elan (Lean toolchain manager)
         shell: bash
         run: |
           curl -sSf https://elan.lean-lang.org/elan-init.sh \
