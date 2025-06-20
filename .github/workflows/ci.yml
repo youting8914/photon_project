@@ -51,24 +51,24 @@ jobs:
           python scripts/scan_hidden_photon_refined_pickle.py
 
   # 2. Lean 源码编译测试（直接调用 lean）
-  build-lean:
+    build-lean:
     name: Build & Verify Lean
     needs: test-python
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Elan (Lean toolchain manager)
+      - name: Install Elan
         shell: bash
         run: |
           curl -sSf https://elan.lean-lang.org/elan-init.sh \
             | sh -s -- -y --default-toolchain leanprover/lean4:stable
           export PATH="$HOME/.elan/bin:$PATH"
-          lean --version                                    # 输出示例：Lean (version 4.20.0…) :contentReference[oaicite:0]{index=0}
+          lean --version
 
       - name: Compile Lean sources
         shell: bash
         working-directory: photon_project_formal
         run: |
           export PATH="$HOME/.elan/bin:$PATH"
-          lean src/Main.lean                                # 直接编译，无需 --make / --check :contentReference[oaicite:1]{index=1}
+          lean src/Main.lean
