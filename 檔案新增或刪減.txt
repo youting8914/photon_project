@@ -1,0 +1,58 @@
+. 檢查目前狀態
+
+cd E:/photon_project
+git status
+
+它會顯示哪些檔案是「未追蹤」（Untracked）、哪些是「已修改」（Modified）或「已刪除」（Deleted）。
+2. 暫存新增／刪除
+
+    新增檔案：
+
+git add path/to/new_file.ext
+
+或一次性把所有變動都加進去：
+
+git add .
+
+刪除檔案：
+如果是在檔案總管／IDE 直接刪掉了，就執行
+
+git add .
+
+Git 會把「刪除」也當成一種 staged 變更；
+你也可用
+
+    git rm path/to/old_file.ext
+
+    來告訴 Git「我要把它從版本庫裡移除」。
+
+3. 提交（Commit）
+
+git commit -m "feat: 新增 XXX 數據包並更新 fetch_rotmod.sh"
+
+– -m 後面寫一句簡短、有意義的描述。
+4. 推送（Push） 到遠端
+
+git push origin main
+
+（若你的主要分支叫 main，或者改成 master）
+5. 驗證
+
+    推送後到 GitHub 頁面確認檔案列表有更新。
+
+    如果有 CI（GitHub Actions），看看 Actions 頁面有沒有跑過並且全綠。
+
+小提示
+
+    如果是「只想更新腳本」而不想把大數據包推上來，要先確認 .gitignore 把資料目錄列進去了。
+
+    新增 fetch 腳本或改 URL，也用同樣流程：git add scripts/fetch_rotmod.sh → git commit → git push。
+
+    常用指令合集：
+
+    git status
+    git add .
+    git commit -m "你的訊息"
+    git push
+
+照這樣做，就能確保本地任何增刪改都會乾淨利落地同步到 GitHub！

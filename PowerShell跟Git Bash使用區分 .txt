@@ -1,0 +1,43 @@
+PowerShell 完全能胜任你平时的 Git 和 Python 操作——比如：
+
+git status
+git add .
+git commit -m "…"
+git push
+python scripts/mtheory_r4_fit.py -N 32 -d 10 -t 1e-3
+
+只要你的 .py 脚本在 PowerShell 下能跑通，就没问题。
+
+不过，任何以 #!/usr/bin/env bash 开头或用到了 Bash 特性的 .sh 脚本（像 fetch_rotmod.sh）：
+
+#!/usr/bin/env bash
+set -e
+mkdir -p rotmod_files
+wget …
+unzip …
+
+就需要一个 Bash 环境来执行。常见做法有两种：
+
+    Git Bash（随 Git for Windows 安装）：
+
+        在开始菜单打开 “Git Bash”
+
+        直接 cd /c/Users/…/photon_project/scripts
+
+        ./fetch_rotmod.sh
+
+    WSL（Windows Subsystem for Linux）：
+
+        安装一个 Ubuntu 子系统
+
+        在 Ubuntu 终端里 cd /mnt/e/photon_project/scripts
+
+        ./fetch_rotmod.sh
+
+推荐流程
+
+    日常版本控制 + Python：都在 PowerShell 下做。
+
+    运行 Shell 脚本：用 Git Bash 或 WSL 来跑 .sh。
+
+这样能兼顾 Windows 原生体验，又不丢失 Bash 脚本的便利。
