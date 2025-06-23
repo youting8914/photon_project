@@ -1,4 +1,3 @@
 import PhotonProjectFormal
-
 def main : IO Unit :=
-  IO.println s!"Hello, {hello}!"
+IO.println s!"foo = {PhotonProjectFormal.foo}"
