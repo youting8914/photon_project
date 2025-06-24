@@ -16,3 +16,4 @@ DH_data/*
 # 忽略 rotmod_files 下除必要文件之外的所有文件
 rotmod_files/*
 
+/.lake

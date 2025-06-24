@@ -1,0 +1,10 @@
+name = "photon_project"
+version = "0.1.0"
+defaultTargets = ["photon_project"]
+
+[[lean_lib]]
+name = "PhotonProject"
+
+[[lean_exe]]
+name = "Main"
+root = "Main"

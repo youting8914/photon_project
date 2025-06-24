@@ -1,3 +1,4 @@
-import PhotonProjectFormal
+import PhotonProject
+
 def main : IO Unit :=
-IO.println s!"foo = {PhotonProjectFormal.foo}"
+  IO.println s!"Hello, {hello}!"
