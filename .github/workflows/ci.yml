@@ -6,51 +6,39 @@ on:
   pull_request:
 
 jobs:
-  # 1. Python 分析脚本测试
+# 1. Python 分析腳本
   test-python:
-    name: Run Python Analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
+      # === 檔案列舉（可保留除錯用） ===
       - name: Debug list files
         run: |
           echo "PWD=$(pwd)"
-          echo "=== Repository Contents ==="
           ls -R .
 
+      # === 小型資料檢查 ===
       - name: Check required small data files
-        shell: bash
         run: |
-          REPOROOT="$(git rev-parse --show-toplevel)"
-          echo "Repo root is $REPOROOT"
           missing=false
-          for P in \
-            "$REPOROOT/DH_data/std_soln_He.p" \
-            "$REPOROOT/rotmod_files"; do
-            if [ ! -e "$P" ]; then
-              echo "::error::Missing required path: $P"
+          for p in DH_data/std_soln_He.p rotmod_files ; do
+            if [ ! -e "$p" ]; then
+              echo "::error::Missing $p"
               missing=true
             else
-              echo "Found: $P"
+              echo "Found $p"
             fi
           done
-          if [ "$missing" = true ]; then
-            echo "Please download and extract archives to DH_data/ and rotmod_files/:"
-            echo "  https://zenodo.org/records/15691765/files/DH_data.rar?download=1"
-            echo "  https://zenodo.org/records/15691753/files/rotmod_files.rar?download=1"
-            exit 1
-          fi
+          $missing && exit 1 || true
 
-      - name: Setup Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      # === Python ===
+      - uses: actions/setup-python@v4
+        with: { python-version: '3.10' }
 
-      - name: Install Python dependencies
+      - name: Install deps
         run: |
-          pip install --upgrade pip
+          pip install -U pip
           pip install sympy pint emcee arviz rebound toml h5py pandas
 
       - name: Run analysis scripts
@@ -58,26 +46,28 @@ jobs:
           python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           python scripts/scan_hidden_photon_refined_pickle.py
 
-  # 2. Lean 源码编译测试（直接调用 lean）
+# 2. Lean 專案編譯
   build-lean:
-    name: Build & Verify Lean
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Install Elan (Lean toolchain manager)
-        shell: bash
+      # === 安裝 Elan + Lean4 ===
+      - name: Install Lean toolchain
         run: |
           curl -sSf https://elan.lean-lang.org/elan-init.sh \
             | sh -s -- -y --default-toolchain leanprover/lean4:stable
-          export PATH="$HOME/.elan/bin:$PATH"
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
           lean --version
 
-      - name: Compile Lean sources
-        shell: bash
-        working-directory: photon_project_formal
+      # === 使用 Lake 編譯 ===
+      - name: Lake build
         run: |
-          export PATH="$HOME/.elan/bin:$PATH"
-          lean src/Main.lean
+          lake update            # 解析依賴並產生 lake-manifest.json
+          lake build             # 編譯，.olean 進 .lake/build/lib
+
+      # （若要執行程式，取消下一段註解）
+      # - name: Run main
+      #   run: |
+      #     lake env lean --run Main
