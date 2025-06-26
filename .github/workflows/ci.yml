@@ -1,73 +1,36 @@
-name: Continuous Integration
+name: CI
 
 on:
-  push:
-    branches: [ main ]
+  push: { branches: [main] }
   pull_request:
+  workflow_dispatch:
 
 jobs:
-# 1. Python 分析腳本
+# 1. Python analysis (不變)
   test-python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      # === 檔案列舉（可保留除錯用） ===
-      - name: Debug list files
+      - name: Check data
         run: |
-          echo "PWD=$(pwd)"
-          ls -R .
-
-      # === 小型資料檢查 ===
-      - name: Check required small data files
-        run: |
-          missing=false
           for p in DH_data/std_soln_He.p rotmod_files ; do
-            if [ ! -e "$p" ]; then
-              echo "::error::Missing $p"
-              missing=true
-            else
-              echo "Found $p"
-            fi
+            test -e "$p" && echo "Found $p" || { echo "::error::Missing $p"; exit 1; }
           done
-          $missing && exit 1 || true
-
-      # === Python ===
       - uses: actions/setup-python@v4
         with: { python-version: '3.10' }
-
-      - name: Install deps
-        run: |
-          pip install -U pip
-          pip install sympy pint emcee arviz rebound toml h5py pandas
-
-      - name: Run analysis scripts
-        run: |
+      - run: pip install -U pip sympy pint emcee arviz rebound toml h5py pandas
+      - run: |
           python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           python scripts/scan_hidden_photon_refined_pickle.py
 
-# 2. Lean 專案編譯
+# 2. Lean build
   build-lean:
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      # === 安裝 Elan + Lean4 ===
-      - name: Install Lean toolchain
-        run: |
-          curl -sSf https://elan.lean-lang.org/elan-init.sh \
-            | sh -s -- -y --default-toolchain leanprover/lean4:stable
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
-          lean --version
-
-      # === 使用 Lake 編譯 ===
-      - name: Lake build
-        run: |
-          lake update            # 解析依賴並產生 lake-manifest.json
-          lake build             # 編譯，.olean 進 .lake/build/lib
-
-      # （若要執行程式，取消下一段註解）
-      # - name: Run main
-      #   run: |
-      #     lake env lean --run Main
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          toolchain: leanprover/lean4:v4.20.0
+          cache: true
+      - run: lake build
