@@ -1,0 +1,18 @@
+{"log":
+ [{"message":
+   ".> c:\\Users\\etyou\\.elan\\toolchains\\leanprover--lean4---v4.20.0\\bin\\clang.exe -o E:\\photon_project\\.lake\\build\\bin\\Main.exe @E:\\photon_project\\.lake\\build\\bin\\Main.exe.rsp",
+   "level": "trace"}],
+ "inputs":
+ [["linkObjs",
+   [["E:\\photon_project\\.lake\\build\\ir\\Main.c.o.noexport",
+     "7782656851461635299"],
+    ["E:\\photon_project\\.lake\\build\\ir\\PhotonProject\\Basic.c.o.noexport",
+     "6598640305637668941"],
+    ["E:\\photon_project\\.lake\\build\\ir\\PhotonProject.c.o.noexport",
+     "16158351934286163117"]]],
+  ["linkLibs", "1723"],
+  ["Lean 4.20.0, commit 77cfc4d1a4f6ef6651792b781eaa6676b4f3f060",
+   "16311077432335102250"],
+  ["traceArgs: #[]", "1723"],
+  ["x86_64-w64-windows-gnu", "3894966287860160785"]],
+ "depHash": "147383746419961505"}

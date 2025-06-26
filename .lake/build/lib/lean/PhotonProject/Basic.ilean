@@ -1,0 +1,1 @@
+{"version":3,"references":{"{\"c\":{\"n\":\"String\",\"m\":\"Init.Prelude\"}}":{"usages":[[2,12,2,18,"PhotonProject.Basic.hello",2,0,2,29,2,4,2,9]],"definition":null},"{\"c\":{\"n\":\"PhotonProject.Basic.hello\",\"m\":\"PhotonProject.Basic\"}}":{"usages":[],"definition":[2,4,2,9]}},"module":"PhotonProject.Basic"}

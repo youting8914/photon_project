@@ -1,9 +1,33 @@
-name = "photon_project"
-version = "0.1.0"
-defaultTargets = ["photon_project"]
+name           = "PhotonProject"
+version        = "0.1.0"
+lean_version   = "leanprover/lean4:v4.20.0"
+defaultTargets = ["PhotonCore", "Main"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit   = false
+
+[[require]]
+name = "proofwidgets"
+git  = "https://github.com/leanprover-community/ProofWidgets4.git"
+rev  = "v0.0.60" 
+
+[[require]]
+name  = "mathlib"
+scope = "leanprover-community"
+rev   = "v4.20.0"
+
+[[require]]
+name = "holonlib"
+path = "libs/holonlib"
 
 [[lean_lib]]
-name = "PhotonProject"
+name  = "PhotonCore"
+roots = ["PhotonCore"]
+
+[[lean_lib]]
+name  = "PhotonProject"
+roots = ["PhotonProject"]
 
 [[lean_exe]]
 name = "Main"

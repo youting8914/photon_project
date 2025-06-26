@@ -1,0 +1,25 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=E:\\photon_project\\.lake\\packages\\Cli\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\batteries\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\Qq\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\aesop\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\importGraph\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\LeanSearchClient\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\plausible\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\proofwidgets\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\mathlib\\.lake\\build\\lib\\lean;E:\\photon_project\\libs\\holonlib\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\build\\lib\\lean c:\\Users\\etyou\\.elan\\toolchains\\leanprover--lean4---v4.20.0\\bin\\lean.exe -Dpp.unicode.fun=true -DautoImplicit=false E:\\photon_project\\PhotonCore.lean -R E:\\photon_project -o E:\\photon_project\\.lake\\build\\lib\\lean\\PhotonCore.olean -i E:\\photon_project\\.lake\\build\\lib\\lean\\PhotonCore.ilean -c E:\\photon_project\\.lake\\build\\ir\\PhotonCore.c --json",
+   "level": "trace"}],
+ "inputs":
+ [["PhotonCore:deps",
+   [["deps",
+     [["PhotonProject/PhotonCore:extraDep",
+       [["@PhotonProject:extraDep", "1723"]]],
+      ["import oleans",
+       [["PhotonCore.Basic:olean",
+         [["PhotonCore.Basic:deps", "12720339749678921893"],
+          ["E:\\photon_project\\.lake\\build\\lib\\lean\\PhotonCore\\Basic.olean",
+           "5593263178944434249"]]]]]]],
+    ["libs",
+     [["import dynlibs", "1723"],
+      ["package external libraries", "1723"],
+      ["module dynlibs", "1723"],
+      ["module plugins", "1723"]]]]],
+  ["Lean 4.20.0, commit 77cfc4d1a4f6ef6651792b781eaa6676b4f3f060",
+   "16311077432335102250"],
+  ["Module.leanArgs: #[-Dpp.unicode.fun=true, -DautoImplicit=false]",
+   "2480034161766020459"],
+  ["E:\\photon_project\\PhotonCore.lean", "566959993471815069"]],
+ "depHash": "5887806453113743102"}

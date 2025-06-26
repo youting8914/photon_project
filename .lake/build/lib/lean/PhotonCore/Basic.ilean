@@ -1,0 +1,1 @@
+{"version":3,"references":{"{\"c\":{\"n\":\"String\",\"m\":\"Init.Prelude\"}}":{"usages":[[2,12,2,18,"PhotonCore.Basic.hello",2,0,2,52,2,4,2,9]],"definition":null},"{\"c\":{\"n\":\"PhotonCore.Basic.hello\",\"m\":\"PhotonCore.Basic\"}}":{"usages":[],"definition":[2,4,2,9]}},"module":"PhotonCore.Basic"}

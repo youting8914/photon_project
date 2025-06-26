@@ -1,0 +1,21 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=E:\\photon_project\\.lake\\packages\\Cli\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\batteries\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\Qq\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\aesop\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\importGraph\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\LeanSearchClient\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\plausible\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\proofwidgets\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\packages\\mathlib\\.lake\\build\\lib\\lean;E:\\photon_project\\libs\\holonlib\\.lake\\build\\lib\\lean;E:\\photon_project\\.lake\\build\\lib\\lean c:\\Users\\etyou\\.elan\\toolchains\\leanprover--lean4---v4.20.0\\bin\\lean.exe -Dpp.unicode.fun=true -DautoImplicit=false E:\\photon_project\\PhotonProject\\Basic.lean -R E:\\photon_project -o E:\\photon_project\\.lake\\build\\lib\\lean\\PhotonProject\\Basic.olean -i E:\\photon_project\\.lake\\build\\lib\\lean\\PhotonProject\\Basic.ilean -c E:\\photon_project\\.lake\\build\\ir\\PhotonProject\\Basic.c --json",
+   "level": "trace"}],
+ "inputs":
+ [["PhotonProject.Basic:deps",
+   [["deps",
+     [["PhotonProject/PhotonProject:extraDep",
+       [["@PhotonProject:extraDep", "1723"]]],
+      ["import oleans", "1723"]]],
+    ["libs",
+     [["import dynlibs", "1723"],
+      ["package external libraries", "1723"],
+      ["module dynlibs", "1723"],
+      ["module plugins", "1723"]]]]],
+  ["Lean 4.20.0, commit 77cfc4d1a4f6ef6651792b781eaa6676b4f3f060",
+   "16311077432335102250"],
+  ["Module.leanArgs: #[-Dpp.unicode.fun=true, -DautoImplicit=false]",
+   "2480034161766020459"],
+  ["E:\\photon_project\\PhotonProject\\Basic.lean", "1789931983727851965"]],
+ "depHash": "14018568182632672650"}

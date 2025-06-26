@@ -1,0 +1,6 @@
+name = "holonlib"
+version = "0.1.0"
+defaultTargets = ["Holonlib"]
+
+[[lean_lib]]
+name = "Holonlib"
