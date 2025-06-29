@@ -1,23 +1,16 @@
-# 外部資料授權清單（Data Licenses）
+# 外部资料授权清单
 
-本文件列出本專案使用之 **所有外部下載資料** 的來源、原始授權、可否商業化與 SHA-256 驗證值。  
-執行 `python scripts/fetch_data.py` 後，檔案將被下載至 `data/` 目錄；請務必遵守各來源授權條款。
+以下数据由脚本自动下载至 `data/` 目录，请务必遵守原始授权条款。
 
-| 本地路徑 (download dir) | 來源網址 | 原始授權 | 商業用途 | SHA-256 (官方檔案雜湊) |
-|------------------------|----------|----------|----------|------------------------|
-| `data/DH_data/std_soln_He.p` | <https://github.com/hongwanliu/millicharged_DM_with_bath/> | 無授權（著作權所有） | **禁止** | `ed33184c1a……` |
-| `data/rotmod_files/*` | <https://kapteyn.phys.rug.nl/gipsy/> | Kapteyn Institute Academic License | **禁止** | `8a812e9d48……` |
-| `data/public_set/*` | <https://example.gov/open-data/> | CC0 1.0 Public Domain | 允許 | `——` |
+| 路径                             | 来源网址                                                                                          | 原始授权                                   | 商业用途 | SHA-256                                                             |
+|----------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------------|----------|---------------------------------------------------------------------|
+| `data/DH_data/std_soln_He.p`     | <https://github.com/hongwanliu/millicharged_DM_with_bath/blob/master/data/std_soln_He.p>           | 著作权所有，禁止散布与商业使用                  | 禁止     | `D40EDE8DF9334A73CD9FD93FE518B5652D1AEA55F9C63580C56A3D7543F85F63` |
+| `data/rotmod_files/`             | <https://zenodo.org/records/15691753/files/rotmod_files.tar.gz>                                  | Kapteyn Institute Academic License（非商业） | 禁止     | `8A812E9D48B1680F38D8A482AA56A9C8FC80B5832746D6B1DEA6E1CD16598B52` |
 
-## 條款摘要
+---
 
-* **無授權 / 著作權所有**  
-  * 檔案僅能用於個人或學術研究；任何公開散布或商業使用須向原作者取得授權。
-* **Kapteyn Institute Academic License**  
-  * 允許學術研究與論文引用；禁止商業使用。完整條款請見 <https://kapteyn.phys.rug.nl/gipsy/license.html>。
-* **CC0 1.0**  
-  * 已放棄所有著作權，可自由使用、商業化、改作；但建議保留來源以利學術引用。
+## 授权摘要
 
-> **注意：**  
-> 1. 若您對單一資料集的授權狀態有疑問，請先閱讀原始頁面條款或與權利人聯繫。  
-> 2. 若需大規模商業使用本專案成果，請與我們商洽取得額外授權或替換資料來源。  
+- **著作权所有**：必须取得原作者同意才能再散布或商业使用。  
+- **Kapteyn Academic License**：仅限学术研究和教学用途，禁止商业用途；详情参见 <https://www.astro.rug.nl/~gipsy/>。
+

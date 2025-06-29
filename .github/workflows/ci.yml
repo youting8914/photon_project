@@ -1,31 +1,39 @@
 name: CI
-on: [push, pull_request, workflow_dispatch]
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test-python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # 安裝 7-Zip（方法 1：apt）
-      - name: Install 7-Zip
-        run: sudo apt-get update -yqq && sudo apt-get install -yqq p7zip-full p7zip-rar  #:contentReference[oaicite:6]{index=6}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      # ↓ 下載並解壓資料
-      - name: Fetch external data
-        run: python scripts/fetch_data.py
-
-      # 檢查檔案存在
-      - name: Check data
+      - name: Install dependencies
         run: |
-          test -f data/DH_data/std_soln_He.p || { echo "::error::missing"; exit 1; }
-          test -d data/rotmod_files || { echo "::error::missing"; exit 1; }
+          pip install -U pip
+          pip install sympy pint emcee arviz rebound toml h5py pandas
 
-      # Python 環境
-      - uses: actions/setup-python@v4
-        with: { python-version: '3.10' }
-      - run: pip install -U pip sympy pint emcee arviz rebound toml h5py pandas
-      - run: |
+      - name: Download and verify external data
+        run: |
+          python scripts/fetch_data.py
+
+      - name: Verify data exists
+        run: |
+          test -f data/DH_data/std_soln_He.p || (echo "::error::Missing std_soln_He.p"; exit 1)
+          test -d data/rotmod_files || (echo "::error::Missing rotmod_files directory"; exit 1)
+
+      - name: Run Python analysis
+        run: |
           python scripts/mtheory_r4_fit.py -N 16 -d 5 -t 1e-2
           python scripts/scan_hidden_photon_refined_pickle.py
 
@@ -33,11 +41,17 @@ jobs:
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Lean
+        uses: leanprover/lean-action@v1
         with:
           toolchain: leanprover/lean4:v4.20.0
           cache: true
-      # 同樣先下載資料（如 Lean 範例需用）
-      - run: python scripts/fetch_data.py
-      - run: lake build
+
+      - name: Download external data for Lean
+        run: python scripts/fetch_data.py
+
+      - name: Build with Lake
+        run: lake build
