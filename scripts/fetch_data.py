@@ -7,12 +7,12 @@ DEST.mkdir(exist_ok=True)
 
 # 要下载的文件及其 SHA-256 校验值
 FILES = {
-    # 1）DH_data/std_soln_He.p：GitHub raw（锁定 commit）
-    "https://raw.githubusercontent.com/hongwanliu/millicharged_DM_with_bath/1d7148d/data/std_soln_He.p": (
+    # 1）DH_data/std_soln_He.p：正确的 GitHub raw 链接
+    "https://raw.githubusercontent.com/hongwanliu/millicharged_DM_with_bath/master/data/std_soln_He.p": (
         "DH_data/std_soln_He.p",
         "d40ede8df9334a73cd9fd93fe518b5652d1aea55f9c63580c56a3d7543f85f63"
     ),
-    # 2）rotmod_files.tar.gz：Zenodo 镜像
+    # 2）rotmod_files.tar.gz：你的 Zenodo DOI 镜像
     "https://zenodo.org/records/15691753/files/rotmod_files.tar.gz?download=1": (
         "rotmod_files/rotmod_files.tar.gz",
         "8a812e9d48b1680f38d8a482aa56a9c8fc80b5832746d6b1dea6e1cd16598b52"
